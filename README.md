@@ -1,4 +1,4 @@
-# Binding Customed QWidget with Shiboken
+# Binding Custom QWidget with Shiboken2
 
 
 
