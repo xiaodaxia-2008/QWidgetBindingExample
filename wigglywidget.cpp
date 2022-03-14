@@ -53,6 +53,12 @@
 #include <QFontMetrics>
 #include <QPainter>
 #include <QTimerEvent>
+#include <RVS/Controller/GenericRobotController.h>
+
+#ifdef slots
+#undef slots
+#endif
+#include <pybind11/pybind11.h>
 
 //! [0]
 WigglyWidget::WigglyWidget(QWidget *parent)
@@ -74,19 +80,19 @@ void WigglyWidget::paintEvent(QPaintEvent * /* event */)
 //! [1] //! [2]
 {
     static constexpr int sineTable[16] = {
-        0, 38, 71, 92, 100, 92, 71, 38, 0, -38, -71, -92, -100, -92, -71, -38
-    };
+        0, 38, 71, 92, 100, 92, 71, 38, 0, -38, -71, -92, -100, -92, -71, -38};
 
     QFontMetrics metrics(font());
     int x = (width() - metrics.horizontalAdvance(text)) / 2;
     int y = (height() + metrics.ascent() - metrics.descent()) / 2;
     QColor color;
-//! [2]
+    //! [2]
 
-//! [3]
+    //! [3]
     QPainter painter(this);
-//! [3] //! [4]
-    for (int i = 0; i < text.size(); ++i) {
+    //! [3] //! [4]
+    for (int i = 0; i < text.size(); ++i)
+    {
         int index = (step + i) % 16;
         color.setHsv((15 - index) * 16, 255, 191);
         painter.setPen(color);
@@ -101,11 +107,22 @@ void WigglyWidget::paintEvent(QPaintEvent * /* event */)
 void WigglyWidget::timerEvent(QTimerEvent *event)
 //! [5] //! [6]
 {
-    if (event->timerId() == timer.timerId()) {
+    if (event->timerId() == timer.timerId())
+    {
         ++step;
         update();
-    } else {
+    }
+    else
+    {
         QWidget::timerEvent(event);
     }
-//! [6]
+    //! [6]
+}
+
+void WigglyWidget::SetController(py::object &controller)
+{
+    // m_controller = controller;
+    // auto c = py::cast<GenericRobotController>(controller);
+    // text = QString::fromStdString(m_controller->GetName());
+    text = "SetController";
 }

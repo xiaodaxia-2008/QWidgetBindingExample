@@ -56,6 +56,19 @@
 #include <QWidget>
 #include <QBasicTimer>
 
+#include <memory>
+
+namespace RVS
+{
+    class GenericRobotController;
+}
+namespace pybind11
+{
+    class object;
+}
+using RVS::GenericRobotController;
+namespace py = pybind11;
+
 //! [0]
 class BINDINGS_API WigglyWidget : public QWidget
 {
@@ -66,6 +79,7 @@ public:
 
 public slots:
     void setText(const QString &newText) { text = newText; }
+    void SetController(py::object &controller);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -75,6 +89,7 @@ private:
     QBasicTimer timer;
     QString text;
     int step;
+    std::shared_ptr<GenericRobotController> m_controller;
 };
 //! [0]
 

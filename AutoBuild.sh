@@ -4,7 +4,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libclang/lib
 export CLANG_INSTALL_DIR=$HOME/libclang
 export PATH=$PATH:$HOME/Qt/5.15.2/gcc_64/bin
 
-mkdir Build
+mkdir -p Build
 cd Build
 rm -rf *
 cmake ..

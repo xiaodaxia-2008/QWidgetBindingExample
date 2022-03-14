@@ -11,6 +11,10 @@ if(POLICY CMP0071)
   cmake_policy(SET CMP0071 NEW)
 endif()
 
+set(python_interpreter "/usr/bin/python3")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 # Consider changing the project name to something relevant for you.
 project(wiggly LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -21,7 +25,7 @@ find_package(Qt5 5.12 REQUIRED COMPONENTS Core Gui Widgets)
 # ======================================
 
 # Set CPP standard to C++11 minimum.
-set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_STANDARD 11)
 
 # The wiggly library for which we will create bindings. You can change the name
 # to something relevant for your project.
@@ -63,7 +67,10 @@ macro(pyside2_config option output_var)
   else()
     set(is_list "")
   endif()
-
+  message(
+    STATUS
+      "${python_interpreter} ${CMAKE_SOURCE_DIR}/utils/pyside2_config.py ${option}"
+  )
   execute_process(
     COMMAND ${python_interpreter} "${CMAKE_SOURCE_DIR}/utils/pyside2_config.py"
             ${option}
@@ -198,6 +205,12 @@ add_custom_command(
 
 # =============================== CMake target - bindings_library
 # =============================
+set(RPS_DIR "$ENV{HOME}/Rvbust/Install/RVBUST/RPS/Lib/CMake")
+find_package(
+  RPS
+  COMPONENTS Controller
+  REQUIRED)
+find_package(pybind11 REQUIRED)
 
 # Set the cpp files which will be used for the bindings library.
 set(${bindings_library}_sources ${generated_sources})
@@ -217,6 +230,7 @@ target_link_libraries(${bindings_library} PRIVATE Qt5::Widgets)
 target_link_libraries(${bindings_library} PRIVATE ${wiggly_library})
 target_link_libraries(${bindings_library} PRIVATE ${pyside2_shared_libraries})
 target_link_libraries(${bindings_library} PRIVATE ${shiboken_shared_libraries})
+target_link_libraries(${wiggly_library} PUBLIC RPS::Controller pybind11::pybind11)
 
 # Adjust the name of generated module.
 set_property(TARGET ${bindings_library} PROPERTY PREFIX "")

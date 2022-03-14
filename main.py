@@ -51,12 +51,16 @@
 import sys
 
 from PySide2.QtWidgets import QApplication
+from RVBUST.RPS import *
 
-from wiggly import WigglyWidget
+from Build.wiggly import WigglyWidget
+from IPython import embed
 
 if __name__ == "__main__":
+    controller = SimController.Create("Motoman_GP12")
     app = QApplication()
     w = WigglyWidget()
+    embed()
     w.setText("Hello, world!")
     w.show()
     sys.exit(app.exec_())
